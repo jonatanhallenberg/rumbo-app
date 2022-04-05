@@ -1,3 +1,38 @@
+// import { Schema, model } from 'mongoose'
+
+// export interface Description {
+
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// POSTGRESQL
 import { query } from "./db";
 
 export const getDescriptionsByEmail = async (email: string) => {
