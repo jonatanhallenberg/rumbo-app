@@ -1,6 +1,6 @@
 import express from "express";
 import { getTransactions, getTransactionsMeta, filterOutExistingTransactions } from "../db/transaction";
-import { getTimeReport, getTimeReportMeta } from "../db/timereport";
+import { getTimeReport, /*getTimeReportMeta*/ } from "../db/timereport";
 import { getSalaryTransactions } from "../eaccounting";
 
 const router = express.Router();
@@ -54,7 +54,7 @@ router.get("/:email/timereport", async (req, res) => {
     if (req.query.project_id) {
       filter.project = req.query.project_id;
     }
-    const timeReport = await getTimeReport(filter);
+    const timeReport = await getTimeReport(/*filter*/);
     console.log(timeReport);
     const mappedReports = timeReport.map((timereport) => ({ ...timereport, hours: Number(timereport.hours) }))
     res.json(mappedReports);
@@ -79,12 +79,12 @@ router.get("/:email/timereportmeta", async (req, res) => {
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
-    const timeReportMeta: any = await getTimeReportMeta(req.params.email);
-    if (!timeReportMeta.length) {
-      res.json([{ year: (new Date()).getFullYear(), month: (new Date()).getMonth() + 1 }])
-    } else {
-      res.json(timeReportMeta);
-    }
+    // const timeReportMeta: any = await getTimeReportMeta(req.params.email);
+    // if (!timeReportMeta.length) {
+    //   res.json([{ year: (new Date()).getFullYear(), month: (new Date()).getMonth() + 1 }])
+    // } else {
+    //   res.json(timeReportMeta);
+    // }
   }
 })
 

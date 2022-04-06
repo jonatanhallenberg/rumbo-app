@@ -22,7 +22,7 @@ const schema = new Schema<Employee>({
 
 const EmployeeModel = model<Employee>('Employee', schema)
 
-export default EmployeeModel
+// export default EmployeeModel
 
 export const getEmployees = async () => {
     const mongoQuery = EmployeeModel.find()

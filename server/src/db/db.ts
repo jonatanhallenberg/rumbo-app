@@ -1,6 +1,6 @@
-import { connect } from 'mongoose'
+// import { connect } from 'mongoose'
 
-connect('mongodb://localhost:27017/rumbo')
+// connect('mongodb://localhost:27017/rumbo')
 
 import { Pool, PoolConfig } from "pg";
 
