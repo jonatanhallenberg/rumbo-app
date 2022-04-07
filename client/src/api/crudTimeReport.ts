@@ -13,8 +13,8 @@ export const getTimeReportsByUser = (jwtToken: string, email: string, year?: num
     }).then((res: any) => res.json());
 };
 
-export const getTimeReportsByProject = (jwtToken: string, id: number, year?: number, month?: number) => {
-
+export const getTimeReportsByProject = (jwtToken: string, year?: number, id?:number , month?: number) => {
+    
     let queries = [];
     if (year) {
         queries.push(`year=${year}`);

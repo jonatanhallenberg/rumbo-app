@@ -16,6 +16,7 @@ export type Employee = {
 };
 
 export type Project = {
+  _id: string,
   id: number;
   project_name: string;
   employees?: number[];

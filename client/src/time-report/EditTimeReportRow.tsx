@@ -39,6 +39,7 @@ const EvergreenDatePicker = ({
   const ExampleCustomInput = forwardRef(({ onClick, value }: any, ref: any) => (
     <TextInput ref={ref} value={value} onClick={onClick} width="100%" />
   ));
+
   return (
     <DatePicker
       dateFormat="yyyy-MM-dd"
@@ -93,9 +94,11 @@ const EditTimeReportRow = ({
     }
 
     if (timeReport.hours < 1) {
+      console.log('hours to low');
       setIsHourValid(false);
       isValid = false;
     } else {
+      console.log('hours fine');
       setIsHourValid(true);
     }
 
@@ -115,7 +118,7 @@ const EditTimeReportRow = ({
     );
 
     if (project) {
-      updateTimeReport({ ...timeReport, project_id: project.id });
+      updateTimeReport({ ...timeReport, project_id: project._id });
     }
   };
 

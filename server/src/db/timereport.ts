@@ -16,7 +16,7 @@ const schema = new Schema<TimeReport>({
     time: { type: Date, required: true },
     description: { type: String, required: true },
     hours: { type: Number, required: true },
-    project_id: { type: Number, required: true }
+    project_id: { type: String, required: true }
 })
 
 const TimeReportModel = model<TimeReport>('TimeReport', schema)

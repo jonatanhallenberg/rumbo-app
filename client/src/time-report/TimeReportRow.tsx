@@ -45,8 +45,8 @@ const TimeReportRow = ({
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const projects = useSelector((state: any) => state.app.projects); // flytta ut till View
     
-    const project = projects.find((project: Project) => timereport.project_id === project.id);
-
+    const project = projects.find((project: Project) => timereport.project_id === project._id);
+    console.log('project: ',project);
     const renderMoreMenu = () => (
         <>
             <IconButton icon={TrashIcon} intent="danger" marginLeft={majorScale(1)} onClick={() => { setShowConfirmDelete(true); setShowMoreMenu(false); }} />
@@ -68,7 +68,7 @@ const TimeReportRow = ({
             {!isMobile && (
                 <>
                     <Table.TextCell maxWidth="125px">
-                        {dateformat(timereport.time, "yyyy-mm-dd")}
+                        {/* {dateformat(timereport.time, "yyyy-mm-dd")} */}
                     </Table.TextCell>
                     <Table.TextCell>{timereport.description}</Table.TextCell>
                 </>
@@ -77,7 +77,7 @@ const TimeReportRow = ({
                 <>
                     <Table.TextCell>
                         <p>
-                            {dateformat(timereport.time, "yyyy-mm-dd")}
+                            {/* {dateformat(timereport.time, "yyyy-mm-dd")} */}
                             <br />
                             {timereport.description}
                         </p>

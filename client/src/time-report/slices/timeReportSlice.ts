@@ -128,7 +128,7 @@ const timeReportSlice = createSlice({
         hours: 0,
         id: -1,
         email: '',
-        project_id: 0,
+        project_id: "",
         editMode: true
       }
       state.entities.push(newTimeReport);
