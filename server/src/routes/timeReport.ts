@@ -1,5 +1,6 @@
 import express from 'express';
 // import { getTimeReport, addTimeReport, updateTimeReport, getTimeReportById, deleteTimeReportById } from "../db/timereport";
+import {addTimeReport} from "../db/timereport";
 import { validationResult } from "express-validator";
 import { TimeReport } from '../types';
 
@@ -24,6 +25,8 @@ router.get('/project/:id/timereport', (req, res) => {
 });
 
 router.post("/timereport", async (req, res) => {
+  console.log("hej");
+  console.log(req.body);
   if (req.body.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
@@ -32,17 +35,17 @@ router.post("/timereport", async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // const newTimeReport = await addTimeReport({
-    //   email: req.body.email,
-    //   time: req.body.time,
-    //   description: req.body.description,
-    //   hours: req.body.hours,
-    //   project_id: req.body.project_id
-    // }) as TimeReport;
+    const newTimeReport = await addTimeReport({
+      email: req.body.email,
+      time: req.body.time,
+      description: req.body.description,
+      hours: req.body.hours,
+      project_id: req.body.project_id
+    }) as TimeReport;
 
-    // const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
+    //  const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
     // delete mapTimeReportData.created_at;
-    // res.json(mapTimeReportData);
+     res.json(newTimeReport);
   }
 });
 

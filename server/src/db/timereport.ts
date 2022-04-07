@@ -95,6 +95,12 @@ export const getTimeReport = async () => {
 
 // };
 
+export const addTimeReport = async (timeReport: TimeReport) => {
+    const newTimeReport =  new TimeReportModel(timeReport);
+    await newTimeReport.save();
+    return newTimeReport;
+}
+
 // export const addTimeReport = (timeReport: TimeReport) => {
 
 //     return query(
