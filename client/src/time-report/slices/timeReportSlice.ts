@@ -63,7 +63,6 @@ export const saveNewTimeReport: any = createAsyncThunk<any, TimeReport>(
 export const saveUpdatedTimeReport: any = createAsyncThunk<any, TimeReport>(
   "timereport/update",
   async (timeReport: any, thunkAPI) => {
-    console.log("hej");
     const state: any = thunkAPI.getState();
     const response = await updateTimeReport(state.authentication.jwtIdToken, {...timeReport, time: timeReport.time.toDateString()}
     );
@@ -122,7 +121,7 @@ const timeReportSlice = createSlice({
     },
 
     addNew(state, action: PayloadAction<Date>) {
-
+      console.log("new");
       const newTimeReport = {
         time: action.payload,
         description: '',

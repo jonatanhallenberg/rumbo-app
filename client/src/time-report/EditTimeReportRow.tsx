@@ -35,6 +35,7 @@ const EvergreenDatePicker = ({
   selectedTime,
   onChange,
 }: EvergreenDatePickerProps) => {
+  console.log('erer');
   const ExampleCustomInput = forwardRef(({ onClick, value }: any, ref: any) => (
     <TextInput ref={ref} value={value} onClick={onClick} width="100%" />
   ));
@@ -66,6 +67,8 @@ const EditTimeReportRow = ({
   const [project, setProject] = useState(getProjectName(timeReport.project_id, projects));
  
   const submitTimeReport = (timeReport: TimeReport) => {
+    console.log("save");
+    console.log(isFormValid(timeReport));
     if (isFormValid(timeReport)) {
 
       if (timeReport.id > 0) {
@@ -78,6 +81,10 @@ const EditTimeReportRow = ({
 
   const isFormValid = (timeReport: TimeReport) => {
     let isValid = true;
+    console.log('desctription: ', timeReport.description);
+    console.log('hours: ', timeReport.hours);
+    console.log('id: ',timeReport.project_id);
+    console.log('time: ', timeReport.time);
     if (!timeReport.description) {
       setIsDescriptionValid(false);
       isValid = false;
