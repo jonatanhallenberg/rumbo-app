@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import { TimeReport } from "../types";
+import { TimeReport} from "../types";
 
 // interface Project {
 //     email: string,
@@ -11,7 +11,7 @@ import { TimeReport } from "../types";
 // }
 
 const schema = new Schema<TimeReport>({
-    id: { type: Number },
+    // id: { type: Number },
     email: { type: String, required: true },
     time: { type: Date, required: true },
     description: { type: String, required: true },
@@ -74,11 +74,12 @@ export const getTimeReport = async () => {
 //     const result = await query(sqlQuery, [timereportId]);
 //     return result['length'] === 0 ? null : result[0];
 // };
-
-// export const deleteTimeReportById = async (timeReportId: number) => {
-//     const sqlQuery = `DELETE FROM public.time_reports WHERE id = $1`;
-//     await query(sqlQuery, [timeReportId]);
-// };
+export const getTimeReportById = async (timereportId: string) => {
+    return await TimeReportModel.find({_id:timereportId});
+}
+export const deleteTimeReportById = async (timeReportId: string) =>{
+    return await TimeReportModel.remove({_id: timeReportId});
+}
 
 // export const getTimeReportMeta = async (email: string) => {
 //     const sqlQuery = `SELECT
@@ -101,20 +102,10 @@ export const addTimeReport = async (timeReport: TimeReport) => {
     return newTimeReport;
 }
 
-// export const addTimeReport = (timeReport: TimeReport) => {
-
-//     return query(
-//         'INSERT INTO public.time_reports(email, "time", description, hours, project_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-//         [
-//             timeReport.email,
-//             timeReport.time,
-//             timeReport.description,
-//             timeReport.hours,
-//             timeReport.project_id,
-//         ]
-//     );
-// };
-
+export const updateTimeReport = async (id:string, timeReport: TimeReport) => {
+    console.log(timeReport);
+    return await TimeReportModel.findByIdAndUpdate({_id:id}, {$set:timeReport});
+}
 // export const updateTimeReport = (timeReport: TimeReport) => {
 
 //     return query(
@@ -129,3 +120,8 @@ export const addTimeReport = async (timeReport: TimeReport) => {
 //         ]
 //     );
 // };
+
+// export const updateTimeReport = async (timeReportId, tidsrapport: TimeReportType) => {
+//     await TimeReportModel.findByIdAndUpdate(timeReportId, tidsrapport)
+//     return await getTimeReportById(timeReportId)
+// }

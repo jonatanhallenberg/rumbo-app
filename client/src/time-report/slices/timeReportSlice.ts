@@ -79,6 +79,7 @@ export const removeTimeReport: any = createAsyncThunk<any, TimeReport>(
       timeReport
     );
     //thunkAPI.dispatch(fetchTimeReports({ email: user.email }));
+    console.log("response", response);
     return response;
   }
 );

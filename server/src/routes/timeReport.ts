@@ -1,8 +1,9 @@
 import express from 'express';
 // import { getTimeReport, addTimeReport, updateTimeReport, getTimeReportById, deleteTimeReportById } from "../db/timereport";
-import {addTimeReport} from "../db/timereport";
+import {getTimeReport, deleteTimeReportById, getTimeReportById, addTimeReport, updateTimeReport} from "../db/timereport";
 import { validationResult } from "express-validator";
-import { TimeReport } from '../types';
+import { TimeReport} from '../types';
+import { stringify } from 'qs';
 
 const router = express.Router();
 
@@ -52,50 +53,53 @@ router.post("/timereport", async (req, res) => {
 
 router.put("/:email/timereport/:id", async (req, res) => {
   console.log("put");
+  console.log(req.params.id);
   if (req.body.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
     const errors = validationResult(req);
+    console.log(errors)
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // const updatedTimeReport = await updateTimeReport({
-    //   email: req.body.email,
-    //   time: req.body.time,
-    //   hours: req.body.hours,
-    //   description: req.body.description,
-    //   project_id: req.body.project_id,
-    //   id: req.body.id
-    // });
+    const updatedTimeReport = await updateTimeReport(
+      req.params.id,
+      {
+        email: req.body.email,
+        time: req.body.time,
+        hours: req.body.hours,
+        description: req.body.description,
+        project_id: req.body.project_id
+    });
 
-    // res.json(updatedTimeReport);
+    res.json(updatedTimeReport);
   }
 });
 
 router.delete("/:email/timereport/:timeReportId", async (req, res) => {
-  console.log("delete");
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
-    console.log("Loggar params", req.params); }
-  // } else {
+    console.log("Loggar params", req.params);
+  } else {
 
-  //   const timeReportId = Number(req.params.timeReportId);
-  //   console.log(timeReportId);
+    const timeReportId = req.params.timeReportId;
+    console.log('timereportid: ', timeReportId);
 
-  //   if (!Number.isInteger(timeReportId)) {
-  //     return res.sendStatus(400);
-  //   } else {
-  //     const timeReport = await getTimeReportById(Number(timeReportId));
-  //     if (!timeReport) {
-  //       res.sendStatus(404);
-  //     } else {
-  //       await deleteTimeReportById(timeReportId);
-  //       res.json(timeReport);
-  //     }
-  //   }
-  //   res.json();
-  // }
+    // if (!Number.isInteger(timeReportId)) {
+    //   return res.sendStatus(400);
+    // } else {
+      const timeReport = await getTimeReportById(timeReportId);
+      console.log("timereportbyid", timeReport);
+      if (!timeReport) {
+        res.sendStatus(404);
+      } else {
+        await deleteTimeReportById(timeReportId);
+        res.json(timeReport);
+      }
+    //}
+    res.json();
+  }
 });
 
 export default router;

@@ -42,17 +42,75 @@ export const postTimeReport = (jwtToken: string,
     }).then((res: any) => res.json());
 };
 
-export const updateTimeReport = (jwtToken: string, timeReport: TimeReport) => {
-    return fetch(`${process.env.REACT_APP_API_BASE_URL}/${timeReport.email}/timereport/${timeReport.id}`, {
+export const updateTimeReport = (jwtToken: string, timeReport: any) => {
+    console.log("API timereport update", timeReport);
+    let email : any;
+    let id : any;
+    if('_doc' in timeReport && '_id' in timeReport._doc){
+        id = timeReport._doc._id;
+        console.log(id);
+    }
+    else{
+        id = timeReport._id;
+    }
+    if('_doc' in timeReport && 'email' in timeReport._doc){
+        email = timeReport._doc.email;
+        console.log(email);
+    }
+    else{
+        email = timeReport.email;
+    }
+    return fetch(`${process.env.REACT_APP_API_BASE_URL}/${email}/timereport/${id}`, {
         method: 'PUT',
         body: JSON.stringify(timeReport),
         headers: { authorization: `bearer ${jwtToken}`, 'Content-Type': 'application/json' },
     }).then((res: any) => res.json());
 };
 
-export const deleteTimeReport = (jwtToken: string, timeReport: TimeReport) => {
-    return fetch(`${process.env.REACT_APP_API_BASE_URL}/${timeReport.email}/timereport/${timeReport.id}`, {
+export const deleteTimeReport = (jwtToken: string, timeReport: any) => {
+    console.log("API timereport", timeReport);
+    let email : any;
+    let id : any;
+    if('_doc' in timeReport && '_id' in timeReport._doc){
+        id = timeReport._doc._id;
+        console.log(id);
+    }
+    else{
+        id = timeReport._id;
+    }
+    if('_doc' in timeReport && 'email' in timeReport._doc){
+        email = timeReport._doc.email;
+        console.log(email);
+    }
+    else{
+        email = timeReport.email;
+    }
+    return fetch(`${process.env.REACT_APP_API_BASE_URL}/${email}/timereport/${id}`, {
         method: 'DELETE',
         headers: { authorization: `bearer ${jwtToken}`, 'Content-Type': 'application/json' },
     }).then((res: any) => res.json());
 };
+
+// let temp : any;
+//     let tempDescription : any;
+//     let tempTime : any;
+//     if('_doc' in timereport && 'project_id' in timereport._doc){
+//         temp = timereport._doc.project_id;
+//         console.log(temp);
+//     }
+//     else{
+//         temp = timereport.project_id;
+//     }
+//     if('_doc' in timereport && 'description' in timereport._doc){
+//         tempDescription = timereport._doc.description;
+//         console.log(tempDescription);
+//     }
+//     else{
+//         tempDescription = timereport.description;
+//     }
+//     if('_doc' in timereport && 'time' in timereport._doc){
+//         tempTime = timereport._doc.time;
+//     }
+//     else{
+//         tempTime = timereport.time;
+//     }

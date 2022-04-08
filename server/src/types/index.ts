@@ -16,7 +16,7 @@ export enum TransactionStatus {
 }
 
 export type TimeReport = {
-  id?: number,
+  // _id?: string,
   email: string;
   time: Date;
   description: string;
