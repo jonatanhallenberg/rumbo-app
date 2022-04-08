@@ -107,7 +107,7 @@ const TimeReportRow = ({
             {!isMobile && (
                 <>
                     <Table.TextCell maxWidth="125px">
-                         {/* {dateformat(timereport.time, "yyyy-mm-dd")}  */}
+                        {dateformat(timereport.time, "yyyy-mm-dd")}
                     </Table.TextCell>
                     <Table.TextCell>{tempDescription}</Table.TextCell>
                 </>
@@ -116,7 +116,7 @@ const TimeReportRow = ({
                 <>
                     <Table.TextCell>
                         <p>
-                            {/* {dateformat(timereport.time, "yyyy-mm-dd")} */}
+                            {dateformat(timereport.time, "yyyy-mm-dd")}
                             <br />
                             { tempDescription}
                         </p>
