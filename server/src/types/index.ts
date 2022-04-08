@@ -23,3 +23,4 @@ export type TimeReport = {
   hours: number;
   project_id: string;
 }
+

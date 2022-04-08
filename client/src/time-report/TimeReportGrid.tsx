@@ -44,7 +44,7 @@ const TimeReportGrid = ({
     removeTimeReport,
     isAdmin
 }: TimeReportGridType) => {
-    console.log("test");
+    //console.log("test");
     return (
         <Wrapper>
             <Table>

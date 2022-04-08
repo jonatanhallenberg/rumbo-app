@@ -51,12 +51,13 @@ export const fetchTimeReportsMeta: any = createAsyncThunk(
 export const saveNewTimeReport: any = createAsyncThunk<any, TimeReport>(
   "timereport/create",
   async ({ user, timeReport }: any, thunkAPI) => {
+    console.log("time: ", timeReport.time.toDateString());
     const state: any = thunkAPI.getState();
     const response = await postTimeReport(
       state.authentication.jwtIdToken,
       { ...timeReport, email: user.email, time: timeReport.time.toDateString() }
     );
-
+    console.log("response", response);
     return response;
   }
 );
@@ -129,8 +130,9 @@ const timeReportSlice = createSlice({
         id: -1,
         email: '',
         project_id: "",
-        editMode: true
+        editMode: true,
       }
+      console.log('newtimereport: ', newTimeReport);
       state.entities.push(newTimeReport);
     },
 
@@ -183,7 +185,6 @@ const timeReportSlice = createSlice({
       //state.loading = "loading";
     },
     [saveNewTimeReport.fulfilled]: (state, action) => {
-
       //state.entities = [...state.entities].filter(timereport => !timereport.editMode);
       // delete state.newTimeReport;
       state.entities = [...state.entities, action.payload].filter(timereport => !timereport.editMode);
