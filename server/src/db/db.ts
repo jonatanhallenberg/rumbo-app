@@ -1,6 +1,5 @@
 import { Pool, PoolConfig } from "pg";
 
-
 export const pool = new Pool({
   ssl: false,
 });
@@ -16,3 +15,6 @@ export const query = (query, values = null) => {
     });
   });
 };
+
+import { connect } from "mongoose";
+connect('mongodb://localhost:27017/rumbo')

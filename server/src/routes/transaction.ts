@@ -10,19 +10,21 @@ router.delete("/:transactionId", async (req, res) => {
       res.sendStatus(401).end();
     } else {
   
-      const transactionId = Number(req.params.transactionId);
+      const transactionId = req.params.transactionId;
+      // const transactionId = Number(req.params.transactionId);
       console.log(transactionId);
   
-      if (!Number.isInteger(transactionId)) {
-        return res.sendStatus(400);
-      } else {
-        const transaction = await getTransactionById(Number(transactionId));
+      // if (!Number.isInteger(transactionId)) {
+      //   return res.sendStatus(400);
+      // } else {
+        // const transaction = await getTransactionById(Number(transactionId));
+        const transaction = await getTransactionById(transactionId);
         if (!transaction) {
           res.sendStatus(404);
         } else {
           await deleteTransactionById(transactionId);
           res.json(transaction);
-        }
+        // }
       }
   
       res.json();

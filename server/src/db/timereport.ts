@@ -8,35 +8,35 @@ type getTimeReportFilter = {
     project?: string;
 };
 
-export const getTimeReport = async ({
-    email,
-    year,
-    month,
-    project,
-}: getTimeReportFilter) => {
-    let where = [];
-    let params = [];
-    if (email) {
-        params.push(email);
-        where.push(`email = $${params.length}`);
-    }
-    if (year) {
-        params.push(year);
-        where.push(`DATE_PART('year',"time") = $${params.length}`);
-    }
-    if (month) {
-        params.push(month);
-        where.push(`DATE_PART('month',"time") = $${params.length}`);
-    }
-    if (project) {
-        params.push(project);
-        where.push(`project_id = $${params.length}`);
-    }
+// export const getTimeReport = async ({
+//     email,
+//     year,
+//     month,
+//     project,
+// }: getTimeReportFilter) => {
+//     let where = [];
+//     let params = [];
+//     if (email) {
+//         params.push(email);
+//         where.push(`email = $${params.length}`);
+//     }
+//     if (year) {
+//         params.push(year);
+//         where.push(`DATE_PART('year',"time") = $${params.length}`);
+//     }
+//     if (month) {
+//         params.push(month);
+//         where.push(`DATE_PART('month',"time") = $${params.length}`);
+//     }
+//     if (project) {
+//         params.push(project);
+//         where.push(`project_id = $${params.length}`);
+//     }
 
-    const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
-    const sqlQuery = `SELECT * FROM (SELECT id, email, time, description, hours, project_id FROM public.time_reports) AllTimeReports ${whereClause}`;
-    return query(sqlQuery, params).then(res => res as TimeReport[]);
-};
+//     const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
+//     const sqlQuery = `SELECT * FROM (SELECT id, email, time, description, hours, project_id FROM public.time_reports) AllTimeReports ${whereClause}`;
+//     return query(sqlQuery, params).then(res => res as TimeReport[]);
+// };
 
 export const getTimeReportById = async (timereportId: number) => {
     const sqlQuery = `SELECT * FROM public.time_reports WHERE id = $1`;
@@ -64,19 +64,19 @@ export const getTimeReportMeta = async (email: string) => {
 
 };
 
-export const addTimeReport = (timeReport: TimeReport) => {
+// export const addTimeReport = (timeReport: TimeReport) => {
 
-    return query(
-        'INSERT INTO public.time_reports(email, "time", description, hours, project_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [
-            timeReport.email,
-            timeReport.time,
-            timeReport.description,
-            timeReport.hours,
-            timeReport.project_id,
-        ]
-    );
-};
+//     return query(
+//         'INSERT INTO public.time_reports(email, "time", description, hours, project_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+//         [
+//             timeReport.email,
+//             timeReport.time,
+//             timeReport.description,
+//             timeReport.hours,
+//             timeReport.project_id,
+//         ]
+//     );
+// };
 
 export const updateTimeReport = (timeReport: TimeReport) => {
 
@@ -92,3 +92,39 @@ export const updateTimeReport = (timeReport: TimeReport) => {
         ]
     );
 };
+
+import TimeReportModel, {TimeReportType} from "./models/timereport";
+
+export const getTimeReport = async ({email,year,month,project}: getTimeReportFilter) => {
+    let params = {};
+    if (email) {
+        params['email'] = email ;
+    }
+    if (year && !month) {
+        params['time'] = {$gt: new Date(year, 0, 1), $lt: new Date(year+1, 0, 1)} 
+    }
+    if (month && year) {
+        // params['month'] = {$gt: new Date(year, month-1, 1), $lt: new Date(year, month, 1)}
+        params['time'] = {$gt: new Date(year, month-1, 1), $lt: new Date(year, month, 1)}
+    }
+    if (project) {
+        params['project'] = project;
+    }
+    const timereports = await TimeReportModel.find(params)
+    console.log(params, "FRÅN TIMEREPORT")
+    return timereports
+}
+
+export const addTimeReport = async (timeReport: TimeReportType) => {
+    const newTimeReport = new TimeReportModel(
+        {
+            email: timeReport.email,
+            time: timeReport.time,
+            description: timeReport.description,
+            hours: timeReport.hours,
+            project_id: timeReport.project_id,
+        }
+      );
+      return await newTimeReport.save().then((res) => [res]);
+    }
+

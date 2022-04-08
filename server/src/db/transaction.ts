@@ -8,71 +8,71 @@ type getTransactionFilter = {
   description?: string;
 };
 
-export const getTransactions = async ({
-  email,
-  year,
-  month,
-  description,
-}: getTransactionFilter) => {
-  let where = [`"status" = 0`];
-  let params = [];
-  if (email) {
-    params.push(email);
-    where.push(`email = $${params.length}`);
-  }
-  if (year) {
-    params.push(year);
-    where.push(`DATE_PART('year',"time") = $${params.length}`);
-  }
-  if (month) {
-    params.push(month);
-    where.push(`DATE_PART('month',"time") = $${params.length}`);
-  }
-  if (description) {
-    description = `%${description}%`;
-    params.push(description);
-    where.push(`LOWER("description") LIKE LOWER($${params.length})`)
-  }
-  const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
-  const sqlQuery = `SELECT * FROM (SELECT id, email, "time", amount, description, status, SUM(amount) OVER ( PARTITION BY email ORDER BY "time", id ) FROM public.transactions) AllTransactions ${whereClause}`;
-  return await query(sqlQuery, params);
-};
+// export const getTransactions = async ({
+//   email,
+//   year,
+//   month,
+//   description,
+// }: getTransactionFilter) => {
+//   let where = [`"status" = 0`];
+//   let params = [];
+//   if (email) {
+//     params.push(email);
+//     where.push(`email = $${params.length}`);
+//   }
+//   if (year) {
+//     params.push(year);
+//     where.push(`DATE_PART('year',"time") = $${params.length}`);
+//   }
+//   if (month) {
+//     params.push(month);
+//     where.push(`DATE_PART('month',"time") = $${params.length}`);
+//   }
+//   if (description) {
+//     description = `%${description}%`;
+//     params.push(description);
+//     where.push(`LOWER("description") LIKE LOWER($${params.length})`)
+//   }
+//   const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
+//   const sqlQuery = `SELECT * FROM (SELECT id, email, "time", amount, description, status, SUM(amount) OVER ( PARTITION BY email ORDER BY "time", id ) FROM public.transactions) AllTransactions ${whereClause}`;
+//   return await query(sqlQuery, params);
+// };
 
-export const getTransactionById = async (transactionId: number) => {
-  const sqlQuery = `SELECT * FROM public.transactions WHERE id = $1`;
-  const result = await query(sqlQuery, [transactionId]);
-  return result['length'] === 0 ? null : result[0];
-};
+// export const getTransactionById = async (transactionId: number) => {
+//   const sqlQuery = `SELECT * FROM public.transactions WHERE id = $1`;
+//   const result = await query(sqlQuery, [transactionId]);
+//   return result['length'] === 0 ? null : result[0];
+// };
 
-export const deleteTransactionById = async (transactionId: number) => {
-  const sqlQuery = `DELETE FROM public.transactions WHERE id = $1`;
-  await query(sqlQuery, [transactionId]);
-};
+// export const deleteTransactionById = async (transactionId: number) => {
+//   const sqlQuery = `DELETE FROM public.transactions WHERE id = $1`;
+//   await query(sqlQuery, [transactionId]);
+// };
 
-export const getTransactionsMeta = async (email: string) => {
-  const sqlQuery = `SELECT
-                      EXTRACT(year from time) as year,
-                      EXTRACT(month from time) as month
-                    FROM
-                      (SELECT * FROM transactions WHERE email = $1 AND status = 0) as nested
-                    GROUP BY EXTRACT(month from time), EXTRACT(year from time)
-                    ORDER BY year, month`;
-  const res: any = await query(sqlQuery, [email]);
-  return res.map(meta => ({ year: Number(meta.year), month: Number(meta.month) }));
-};
+// export const getTransactionsMeta = async (email: string) => {
+//   const sqlQuery = `SELECT
+//                       EXTRACT(year from time) as year,
+//                       EXTRACT(month from time) as month
+//                     FROM
+//                       (SELECT * FROM transactions WHERE email = $1 AND status = 0) as nested
+//                     GROUP BY EXTRACT(month from time), EXTRACT(year from time)
+//                     ORDER BY year, month`;
+//   const res: any = await query(sqlQuery, [email]);
+//   return res.map(meta => ({ year: Number(meta.year), month: Number(meta.month) }));
+// };
 
-export const addTransaction = (transaction: Transaction) => {
-  return query(
-    'INSERT INTO public.transactions(email, "time", amount, description, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [
-      transaction.email,
-      transaction.time,
-      transaction.amount,
-      transaction.description,
-      TransactionStatus.Final
-    ]
-  ).then((res) => res);
-};
+// export const addTransaction = (transaction: Transaction) => {
+//   return query(
+//     'INSERT INTO public.transactions(email, "time", amount, description, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+//     [
+//       transaction.email,
+//       transaction.time,
+//       transaction.amount,
+//       transaction.description,
+//       TransactionStatus.Final
+//     ]
+//   ).then((res) => res);
+// };
 
 export const filterOutExistingTransactions = async (transactions: Transaction[]): Promise<Transaction[]> => {
   if (transactions.length === 0) {
@@ -84,3 +84,49 @@ export const filterOutExistingTransactions = async (transactions: Transaction[])
     .map(existingTransaction => existingTransaction.source_reference);
   return transactions.filter(transaction => existingTransactionSourceReferences.indexOf(transaction.sourceReference) === -1);
 }
+
+import TransactionModel, { TransactionType, TransactionStatusType } from "./models/transaction";
+
+export const getTransactions = async ({
+  email, year, month, description}: getTransactionFilter) => {
+    let queries = {}
+    if(email){
+      queries['email'] = email
+    }
+    if(year && !month){
+      queries['year'] = {$gt: new Date(year, 0, 1), $lt: new Date(year+1, 0, 1)}
+    }
+    if(month && year){
+      queries['month'] = {$gt: new Date(year, month-1, 1), $lt: new Date(year, month, 1)}
+    }
+    if(description){
+      queries['description'] = { '$regex' : '.*' + description + '.*', '$options' : 'i' }
+    }
+    console.log('TRANSACTIONS', queries)
+  return await TransactionModel.find(queries);
+}
+
+export const getTransactionById = async (transactionId: any) => {
+  return await TransactionModel.findById(transactionId);
+}
+export const deleteTransactionById = async (transactionId: any) => {
+  const test = await TransactionModel.findByIdAndDelete(transactionId)
+  return test ;
+}
+export const getTransactionsMeta = async (email: string) => {
+  const res = await TransactionModel.aggregate([ {$match: {'email': email}},{ $group: { _id: { year: { $year: "$time" }, month: { $month: "$time" } } } }]).exec()
+  return (await res).map(meta => ({ year: Number(meta._id.year), month: Number(meta._id.month) }) );
+}
+
+export const addTransaction = (transaction: TransactionType) => {
+  const transactionModel = new TransactionModel(
+      {
+        email: transaction.email,
+        time: transaction.time,
+        amount: transaction.amount,
+        description: transaction.description,
+        status: TransactionStatusType.Final,
+      }
+    );
+    return transactionModel.save().then((res) => [res]);
+  }
