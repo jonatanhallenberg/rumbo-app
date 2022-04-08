@@ -115,7 +115,7 @@ export const getTimeReport = async ({email,year,month,project}: getTimeReportFil
     return timereports
 }
 
-export const addTimeReport = async (timeReport: TimeReportType) => {
+export const addTimeReport = (timeReport: TimeReportType) => {
     const newTimeReport = new TimeReportModel(
         {
             email: timeReport.email,
@@ -125,6 +125,6 @@ export const addTimeReport = async (timeReport: TimeReportType) => {
             project_id: timeReport.project_id,
         }
       );
-      return await newTimeReport.save().then((res) => [res]);
+      return newTimeReport.save().then((res) => [res]);
     }
 
