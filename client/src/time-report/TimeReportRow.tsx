@@ -44,12 +44,10 @@ const TimeReportRow = ({
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const projects = useSelector((state: any) => state.app.projects); // flytta ut till View
-    // console.log('Projects: ', projects);
-    // console.log('Timereport: ', timereport);
     console.log('timereport: ', timereport);
     let temp : any;
     let tempDescription : any;
-    //console.log(timereport._doc.project_id);
+    let tempTime : any;
     if('_doc' in timereport && 'project_id' in timereport._doc){
         temp = timereport._doc.project_id;
         console.log(temp);
@@ -64,19 +62,16 @@ const TimeReportRow = ({
     else{
         tempDescription = timereport.description;
     }
+    if('_doc' in timereport && 'time' in timereport._doc){
+        tempTime = timereport._doc.time;
+    }
+    else{
+        tempTime = timereport.time;
+    }
     console.log("projects", projects);
-    //console.log('timereport', timereport._doc.project_id);
-   //console.log("tempprojectid: ", temp._doc.project_id);
+
    // const project = projects.find((project: Project) => timereport.project_id === project._id);
     let project = projects.find((project1: Project) => {
-        //console.log("Whole temp: ", temp);
-        // console.log("temp: ", temp._doc.project_id);
-        // console.log("projects: ", project._id);
-            console.log("checkProj1_id: ",  project1._id);
-            console.log("checkTemp: ",  temp);
-            // if(temp === undefined){
-            //     return true;
-            // }
             return temp === project1._id; 
     });
     console.log('project: ',project);
@@ -85,7 +80,6 @@ const TimeReportRow = ({
     //         project_name : ""
     //     }
     // }
-    console.log('project: ',project);
     const renderMoreMenu = () => (
         <>
             <IconButton icon={TrashIcon} intent="danger" marginLeft={majorScale(1)} onClick={() => { setShowConfirmDelete(true); setShowMoreMenu(false); }} />
@@ -107,7 +101,7 @@ const TimeReportRow = ({
             {!isMobile && (
                 <>
                     <Table.TextCell maxWidth="125px">
-                        {dateformat(timereport.time, "yyyy-mm-dd")}
+                        {dateformat(tempTime, "yyyy-mm-dd")}
                     </Table.TextCell>
                     <Table.TextCell>{tempDescription}</Table.TextCell>
                 </>
@@ -116,7 +110,7 @@ const TimeReportRow = ({
                 <>
                     <Table.TextCell>
                         <p>
-                            {dateformat(timereport.time, "yyyy-mm-dd")}
+                            {dateformat(tempTime, "yyyy-mm-dd")}
                             <br />
                             { tempDescription}
                         </p>

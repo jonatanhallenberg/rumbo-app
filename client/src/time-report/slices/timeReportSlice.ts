@@ -51,13 +51,11 @@ export const fetchTimeReportsMeta: any = createAsyncThunk(
 export const saveNewTimeReport: any = createAsyncThunk<any, TimeReport>(
   "timereport/create",
   async ({ user, timeReport }: any, thunkAPI) => {
-    console.log("time: ", timeReport.time.toDateString());
     const state: any = thunkAPI.getState();
     const response = await postTimeReport(
       state.authentication.jwtIdToken,
       { ...timeReport, email: user.email, time: timeReport.time.toDateString() }
     );
-    console.log("response", response);
     return response;
   }
 );
@@ -122,7 +120,6 @@ const timeReportSlice = createSlice({
     },
 
     addNew(state, action: PayloadAction<Date>) {
-      console.log("new");
       const newTimeReport = {
         time: action.payload,
         description: '',
