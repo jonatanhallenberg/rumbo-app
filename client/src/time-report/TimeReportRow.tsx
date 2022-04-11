@@ -44,20 +44,20 @@ const TimeReportRow = ({
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const projects = useSelector((state: any) => state.app.projects); // flytta ut till View
-    console.log('timereport: ', timereport);
+    //console.log('timereport: ', timereport);
     let temp : any;
     let tempDescription : any;
     let tempTime : any;
     if('_doc' in timereport && 'project_id' in timereport._doc){
         temp = timereport._doc.project_id;
-        console.log(temp);
+        // console.log(temp);
     }
     else{
         temp = timereport.project_id;
     }
     if('_doc' in timereport && 'description' in timereport._doc){
         tempDescription = timereport._doc.description;
-        console.log(tempDescription);
+        // console.log(tempDescription);
     }
     else{
         tempDescription = timereport.description;
@@ -68,13 +68,13 @@ const TimeReportRow = ({
     else{
         tempTime = timereport.time;
     }
-    console.log("projects", projects);
+    // console.log("projects", projects);
 
    // const project = projects.find((project: Project) => timereport.project_id === project._id);
     let project = projects.find((project1: Project) => {
             return temp === project1._id; 
     });
-    console.log('project: ',project);
+    //console.log('project: ',project);
     // if(project === undefined){
     //     project = {
     //         project_name : ""

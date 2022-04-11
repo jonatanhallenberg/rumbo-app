@@ -1,6 +1,6 @@
 import express from 'express';
 // import { getTimeReport, addTimeReport, updateTimeReport, getTimeReportById, deleteTimeReportById } from "../db/timereport";
-import {getTimeReport, deleteTimeReportById, getTimeReportById, addTimeReport, updateTimeReport} from "../db/timereport";
+import {getTimeReport, deleteTimeReportById, getTimeReportById, addTimeReport, updateTimeReport/*,getTimeReportsByFilter*/} from "../db/timereport";
 import { validationResult } from "express-validator";
 import { TimeReport} from '../types';
 import { stringify } from 'qs';
@@ -22,7 +22,8 @@ router.get('/project/:id/timereport', (req, res) => {
     if (req.query.month) {
       filter.month = req.query.month;
     }
-    // getTimeReport(filter).then((timereport) => res.json(timereport));
+    // console.log("Filter");
+    // getTimeReportsByFilter(filter).then((timereport) => res.json(timereport));
   }
 });
 

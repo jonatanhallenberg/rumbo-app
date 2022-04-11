@@ -1,6 +1,6 @@
 import express from "express";
 import { getTransactions, getTransactionsMeta, filterOutExistingTransactions } from "../db/transaction";
-import { getTimeReport, /*getTimeReportMeta*/ } from "../db/timereport";
+import { getTimeReportsByFilter, getTimeReportMeta} from "../db/timereport";
 import { getSalaryTransactions } from "../eaccounting";
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get("/:email/transaction", async (req, res) => {
       email: req.params.email,
     };
     if (req.query.user) {
-      console.log(req["user"]);
+      // console.log(req["user"]);
     }
     if (req.query.year) {
       filter.year = req.query.year;
@@ -33,15 +33,13 @@ router.get("/:email/transaction", async (req, res) => {
 // TODO skapa en project route? 
 
 router.get("/:email/timereport", async (req, res) => {
-
-
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
     let filter: any = {
       email: req.params.email,
     };
-
+    console.log("Query: ",req.query);
     if (req.query.user) {
       console.log(req["user"]);
     }
@@ -54,10 +52,14 @@ router.get("/:email/timereport", async (req, res) => {
     if (req.query.project_id) {
       filter.project = req.query.project_id;
     }
-    const timeReport = await getTimeReport(/*filter*/);
-    console.log(timeReport);
-    const mappedReports = timeReport.map((timereport) => ({ ...timereport, hours: Number(timereport.hours) }))
-    res.json(mappedReports);
+    console.log("filter: ", filter);
+    const timeReport:any = await getTimeReportsByFilter(filter);
+    console.log("timereport: ", timeReport);
+    console.log("user first");
+    if(timeReport != undefined){
+      const mappedReports = timeReport.map((timereport) => ({ ...timereport, hours: Number(timereport.hours) }))
+      res.json(mappedReports);
+    }
   }
 
 });
@@ -76,15 +78,16 @@ router.get("/:email/transactionsmeta", async (req, res) => {
 });
 
 router.get("/:email/timereportmeta", async (req, res) => {
+  console.log("user second");
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
-    // const timeReportMeta: any = await getTimeReportMeta(req.params.email);
-    // if (!timeReportMeta.length) {
-    //   res.json([{ year: (new Date()).getFullYear(), month: (new Date()).getMonth() + 1 }])
-    // } else {
-    //   res.json(timeReportMeta);
-    // }
+    const timeReportMeta: any = await getTimeReportMeta(req.params.email);
+    if (!timeReportMeta.length) {
+      res.json([{ year: (new Date()).getFullYear(), month: (new Date()).getMonth() + 1 }])
+    } else {
+      res.json(timeReportMeta);
+    }
   }
 })
 
