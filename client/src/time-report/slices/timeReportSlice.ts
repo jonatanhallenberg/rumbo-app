@@ -79,7 +79,7 @@ export const removeTimeReport: any = createAsyncThunk<any, TimeReport>(
       state.authentication.jwtIdToken,
       timeReport
     );
-    //thunkAPI.dispatch(fetchTimeReports({ email: user.email }));
+    // thunkAPI.dispatch(fetchTimeReports({ email: user.email }));
     return response;
   }
 );

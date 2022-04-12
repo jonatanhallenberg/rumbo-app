@@ -48,9 +48,10 @@ router.post("/timereport", async (req, res) => {
       project_id: req.body.project_id
     })
 
-    const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
+    // const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
     // delete mapTimeReportData.created_at;
-    res.json(mapTimeReportData);
+    // res.json(mapTimeReportData);
+    res.json(newTimeReport[0]);
   } 
 });
 
@@ -82,23 +83,28 @@ router.delete("/:email/timereport/:timeReportId", async (req, res) => {
     res.sendStatus(401).end();
     // console.log("Loggar params", req.params);
   } else {
-
-    const timeReportId = Number(req.params.timeReportId);
-    // console.log(timeReportId);
-
-    if (!Number.isInteger(timeReportId)) {
-      return res.sendStatus(400);
-    } else {
-      const timeReport = await getTimeReportById(Number(timeReportId));
-      if (!timeReport) {
-        res.sendStatus(404);
-      } else {
-        await deleteTimeReportById(timeReportId);
-        res.json(timeReport);
-      }
+    // const timeReportId = Number(req.params.timeReportId);
+    // const timeReportId = String(req.params.timeReportId);
+    const timeReportId = req.params.timeReportId;
+    console.log(timeReportId);
+    if(timeReportId === 'undefined') {
+      res.sendStatus(400).end();
     }
+    // if (!Number.isInteger(timeReportId)) {
+    //   return res.sendStatus(400);
+    // } else {
+      // const timeReport = await getTimeReportById(Number(timeReportId));
+      // const timeReport = await getTimeReportById(timeReportId);
+      // if (!timeReport) {
+      //   res.sendStatus(404);
+      // } else {
+        await deleteTimeReportById(timeReportId);
+        // res.json(timeReport);
+        res.json();
+      }
+    // }
     res.json();
   }
-});
+);
 
 export default router;
