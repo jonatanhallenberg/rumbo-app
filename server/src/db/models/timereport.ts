@@ -9,7 +9,6 @@ export interface TimeReportType {
 }
 
 const schema = new Schema<TimeReportType>({
-    // _id: {type: String, required: false},
     email: {type: String, required: true},
     time: {type: Date, required: true},
     hours: {type: Number, required: true},
