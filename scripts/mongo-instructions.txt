@@ -1,5 +1,31 @@
-1. Gå in i mappen där du har migrations-scripten.
-2. Slå kommandot: docker cp filnamn.json mongocontainerid:tmp/filnamn.json
-3. Gå in i mongodb med: docker exec -it mongocontainerid /bin/bash
-4. Slå kommandot cd tmp
-5. Slå kommandot mongoimport filnamn.json --db mongodatabasnamnet --collection employees
+
+
+//Kolla docker container id
+Docker ps
+
+Docker exec -it containername /bin/bash
+
+cd tmp
+
+cat employees.json
+
+//Kopiera fil mot repo
+
+Skapa migration mapp -> json
+
+docker cp containerid:/tmp/employees.json employees.json (sista sparar filen med givet namn)
+
+//Läs in json-fil mot mongodb
+Docker ps, kolla mongo id
+
+docker cp employees.json containerid:/tmp/employees.json
+
+//Exekvera docker container
+docker exec -it containerid /bin/bash
+
+cd tmp
+
+mongoimport /tmp/employees.json --db rumbo --collection employees
+mongoimport /tmp/transactions.json --db rumbo --collection transactions
+mongoimport /tmp/projects.json --db rumbo --collection projects
+		       (välj databas)    (välj collection)

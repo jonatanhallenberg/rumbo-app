@@ -1,12 +1,2 @@
-{
-    "customer_name": "Åkeriet",
-    "project_name": "Hemsida akeriet.se",
-    "agreement_ref": "AK132",
-    "active": true
-}
-{
-    "customer_name": "Storbanken",
-    "project_name": "Finanssytemet",
-    "agreement_ref": "AK345",
-    "active": true
-}
+{"customer_name":"Åkeriet","project_name":"Hemsida akeriet.se","agreement_ref":"AK132","active":true,"currentdate":"2022-04-04T11:53:15.008572+00:00"}
+{"customer_name":"Storbanken","project_name":"Finanssystemet","agreement_ref":"AK345","active":true,"currentdate":"2022-04-04T11:53:15.008572+00:00"}

@@ -6,7 +6,7 @@ SELECT row_to_json(employees) FROM (SELECT email, firstname, lastname, fullname 
 
 /*EXPORT SCRIPT FOR PROJECTS*/
 COPY (
-SELECT row_to_json(projects) FROM (SELECT customer_name, project_name, agreement_ref, active, created_at as currentDate FROM projects) as projects
+SELECT row_to_json(projects) FROM (SELECT customer_name, project_name, agreement_ref, active, created_at as "createdAt" FROM projects) as projects
 ) TO '/tmp/projects.json' WITH (FORMAT text, HEADER false)
 /*EXPORT SCRIPT FOR PROJECTS*/
 
