@@ -28,7 +28,6 @@ router.get('/project/:id/timereport', (req, res) => {
 });
 
 router.post("/timereport", async (req, res) => {
-  console.log("post");
   if (req.body.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
@@ -54,7 +53,6 @@ router.post("/timereport", async (req, res) => {
 
 router.put("/:email/timereport/:id", async (req, res) => {
   console.log("put");
-  console.log(req.params.id);
   if (req.body.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
@@ -81,17 +79,13 @@ router.put("/:email/timereport/:id", async (req, res) => {
 router.delete("/:email/timereport/:timeReportId", async (req, res) => {
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
-    console.log("Loggar params", req.params);
   } else {
 
     const timeReportId = req.params.timeReportId;
-    console.log('timereportid: ', timeReportId);
-
     // if (!Number.isInteger(timeReportId)) {
     //   return res.sendStatus(400);
     // } else {
       const timeReport = await getTimeReportById(timeReportId);
-      console.log("timereportbyid", timeReport);
       if (!timeReport) {
         res.sendStatus(404);
       } else {

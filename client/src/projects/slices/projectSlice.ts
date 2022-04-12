@@ -3,7 +3,7 @@ import { Employee } from "../../app/slices/appSlice";
 
 type ProjectState = {
   employees: Employee[],
-  project_id?: number
+  project_id?: string
 
 }
 
@@ -16,7 +16,7 @@ const projectSlice = createSlice({
   } as ProjectState,
   reducers: {
     // standard reducer logic, with auto-generated action types per reducer
-    setProject(state, action: PayloadAction<number>) {
+    setProject(state, action: PayloadAction<string>) {
       state.project_id = action.payload;
     },
   },

@@ -47,7 +47,6 @@ export const getTimeReportsByFilter = async ({
 }: getTimeReportFilter) => {
     //let where = [];
     let params = [];
-    console.log('params: ', params)
     if (email) {
         params.push(email);
         //where.push(`email = $${params.length}`);
@@ -64,11 +63,8 @@ export const getTimeReportsByFilter = async ({
         params.push(project);
         //where.push(`project_id = $${params.length}`);
     }
-    console.log(params)
-    console.log("email: ", email, "Year:", year, "month: ", month, "Project: ", project);
     //const queryParameters = [`time = ${year}-${month}`]
-    const newDate = new Date(year, month, 1);
-    console.log(newDate);
+    const newDate = new Date(year, month, 1)
     return await TimeReportModel.find({email: email});
     //const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
     //const sqlQuery = `SELECT * FROM (SELECT id, email, time, description, hours, project_id FROM public.time_reports) AllTimeReports ${whereClause}`;
@@ -79,10 +75,9 @@ export const getTimeReportById = async (timereportId: string) => {
     return await TimeReportModel.find({_id:timereportId});
 }
 export const deleteTimeReportById = async (timeReportId: string) =>{
-    return await TimeReportModel.remove({_id: timeReportId});
+    return await TimeReportModel.deleteOne({_id: timeReportId});
 }
 // export const getTimeReportMeta = async (email: string) => {
-//     console.log("Jävla skit metaaaaaaaaaaaaaaaaaaaaaa");
 
 // }
 
@@ -113,6 +108,5 @@ export const addTimeReport = async (timeReport: TimeReport) => {
 }
 
 export const updateTimeReport = async (id:string, timeReport: TimeReport) => {
-    console.log(timeReport);
     return await TimeReportModel.findByIdAndUpdate({_id:id}, {$set:timeReport});
 }

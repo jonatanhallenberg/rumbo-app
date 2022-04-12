@@ -24,7 +24,6 @@ const ProjectView = ({ user }: ProjectViewType) => {
   // hämta från slice alla project. 
   // const pprojects.find(se om id:t matchar)
   dispatch(projectSlice.actions.setProject(params.projectId));
-
   const timeReportMeta = useSelector((state: any) => state.timeReport.meta);
   const filter: DateFilter = useSelector(
     (state: any) => state.timeReport.filter

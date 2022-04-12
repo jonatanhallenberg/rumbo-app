@@ -31,7 +31,7 @@ export const getTransactionsMeta = (jwtToken: string, email: string) => {
   };
 
   export const deleteTransaction = (jwtToken: string, transaction: Transaction) => {
-    return fetch(`${process.env.REACT_APP_API_BASE_URL}/transaction/${transaction.id}`, {
+    return fetch(`${process.env.REACT_APP_API_BASE_URL}/transaction/${transaction._id}`, {
       method: 'DELETE',
       headers: { authorization: `bearer ${jwtToken}`, 'Content-Type': 'application/json' },
     }).then((res: any) => res.json());

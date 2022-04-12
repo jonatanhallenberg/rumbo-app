@@ -17,7 +17,6 @@ const ProjectListView = ({ user }: ProjectViewType) => {
   const dispatch = useDispatch();
 
   let params = useParams();
-  console.log("test", params);
   const timeReportMeta = useSelector((state: any) => state.timeReport.meta);
   const filter: DateFilter = useSelector(
     (state: any) => state.timeReport.filter

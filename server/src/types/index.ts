@@ -10,9 +10,9 @@ export type Transaction = {
 };
 
 export enum TransactionStatus {
-  Final,
-  Preliminary,
-  Rejected
+  Final = 0,
+  Preliminary = 1,
+  Rejected = 2
 }
 
 export type TimeReport = {

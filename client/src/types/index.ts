@@ -1,4 +1,5 @@
 export type Transaction = {
+  _id?: string,
   id?: number,
   email: string;
   time: Date;

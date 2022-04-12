@@ -1,5 +1,34 @@
 import { query } from "./db";
 import { Transaction, TransactionStatus } from "../types";
+import { Schema, model } from 'mongoose'
+
+// export type Transaction = {
+//   id?: number,
+//   email: string;
+//   time: Date;
+//   amount: number;
+//   description: string;
+//   sum?: number;
+//   sourceReference?: string;
+//   status?: TransactionStatus;
+// };
+
+export const schema = new Schema<Transaction>({
+  // id: { type: Number },
+  email: { type: String, required: true },
+  time: { type: Date, required: true },
+  description: { type: String, required: true },
+  amount: {type: Number, required: true},
+  sourceReference: {type: String},
+  sum:{type: Number},
+  status: {
+    type: Number,
+    enum: [0, 1, 2],
+    default: 0
+  }
+})
+
+export const TransactionModel = model<Transaction>('Transaction', schema);
 
 type getTransactionFilter = {
   email?: string;
@@ -14,64 +43,49 @@ export const getTransactions = async ({
   month,
   description,
 }: getTransactionFilter) => {
-  let where = [`"status" = 0`];
   let params = [];
   if (email) {
     params.push(email);
-    where.push(`email = $${params.length}`);
   }
   if (year) {
     params.push(year);
-    where.push(`DATE_PART('year',"time") = $${params.length}`);
   }
   if (month) {
     params.push(month);
-    where.push(`DATE_PART('month',"time") = $${params.length}`);
   }
   if (description) {
     description = `%${description}%`;
     params.push(description);
-    where.push(`LOWER("description") LIKE LOWER($${params.length})`)
+  
   }
-  const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
-  const sqlQuery = `SELECT * FROM (SELECT id, email, "time", amount, description, status, SUM(amount) OVER ( PARTITION BY email ORDER BY "time", id ) FROM public.transactions) AllTransactions ${whereClause}`;
-  return await query(sqlQuery, params);
+  return await TransactionModel.find({email: email})
 };
 
-export const getTransactionById = async (transactionId: number) => {
-  const sqlQuery = `SELECT * FROM public.transactions WHERE id = $1`;
-  const result = await query(sqlQuery, [transactionId]);
-  return result['length'] === 0 ? null : result[0];
+export const getTransactionById = async (transactionId: string) => {
+  // const sqlQuery = `SELECT * FROM public.transactions WHERE id = $1`;
+  // const result = await query(sqlQuery, [transactionId]);
+  // return result['length'] === 0 ? null : result[0];
+  return await TransactionModel.find({"_id":transactionId})
 };
 
-export const deleteTransactionById = async (transactionId: number) => {
-  const sqlQuery = `DELETE FROM public.transactions WHERE id = $1`;
-  await query(sqlQuery, [transactionId]);
+export const deleteTransactionById = async (transactionId:string) => {
+  // const sqlQuery = `DELETE FROM public.transactions WHERE id = $1`;
+  // await query(sqlQuery, [transactionId]);
+  return await TransactionModel.deleteOne({"_id":transactionId})
 };
 
 export const getTransactionsMeta = async (email: string) => {
-  const sqlQuery = `SELECT
-                      EXTRACT(year from time) as year,
-                      EXTRACT(month from time) as month
-                    FROM
-                      (SELECT * FROM transactions WHERE email = $1 AND status = 0) as nested
-                    GROUP BY EXTRACT(month from time), EXTRACT(year from time)
-                    ORDER BY year, month`;
-  const res: any = await query(sqlQuery, [email]);
-  return res.map(meta => ({ year: Number(meta.year), month: Number(meta.month) }));
+  const res = await TransactionModel.aggregate([
+    {$match: {'email': email}}, {$group: { _id:{year: {$year: "$time" }, month: {$month: "$time"}}}}
+  ])
+  return res.map(meta => ({year: Number(meta._id.year), month: Number(meta._id.month)}))
 };
 
-export const addTransaction = (transaction: Transaction) => {
-  return query(
-    'INSERT INTO public.transactions(email, "time", amount, description, status) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-    [
-      transaction.email,
-      transaction.time,
-      transaction.amount,
-      transaction.description,
-      TransactionStatus.Final
-    ]
-  ).then((res) => res);
+export const addTransaction = async (transaction: Transaction) =>{
+    const newTransaction =  new TransactionModel(transaction);
+    await newTransaction.save();
+    return newTransaction;
+
 };
 
 export const filterOutExistingTransactions = async (transactions: Transaction[]): Promise<Transaction[]> => {

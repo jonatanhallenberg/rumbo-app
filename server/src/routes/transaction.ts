@@ -10,20 +10,19 @@ router.delete("/:transactionId", async (req, res) => {
       res.sendStatus(401).end();
     } else {
   
-      const transactionId = Number(req.params.transactionId);
-      console.log(transactionId);
+      const transactionId = req.params.transactionId;
   
-      if (!Number.isInteger(transactionId)) {
-        return res.sendStatus(400);
-      } else {
-        const transaction = await getTransactionById(Number(transactionId));
+      // if (!Number.isInteger(transactionId)) {
+      //   return res.sendStatus(400);
+      // } else {
+        const transaction = await getTransactionById(String(transactionId));
         if (!transaction) {
           res.sendStatus(404);
         } else {
           await deleteTransactionById(transactionId);
           res.json(transaction);
         }
-      }
+     // }
   
       res.json();
     }
@@ -35,7 +34,6 @@ router.delete("/:transactionId", async (req, res) => {
     };
   
     if (req.query.user) {
-      console.log(req["user"]);
     }
     if (req.query.year) {
       filter.year = req.query.year;
@@ -46,7 +44,7 @@ router.delete("/:transactionId", async (req, res) => {
     getTransactions(filter).then((transactions) => res.json(transactions));
   });
 
-  router.post("/", async (req, res) => {
+  router.post("/", async (req, res) =>{
     if (!req["isAdmin"]) {
       res.sendStatus(401).end();
     } else {

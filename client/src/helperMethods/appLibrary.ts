@@ -12,14 +12,11 @@ export const getProjectName = (projectId : string, projects : Project[]) => {
 
 }
 export const getProjectId = (projectName : any, projects : Project[]) => {
-    // console.log(projects);
-    // console.log(projectName)
     const project = projects.find(
         (project: Project) => project.project_name === projectName
       );
 
       if(project) {
-        //   console.log('Projects', project._id);
           return project._id;
       }
       else return "";

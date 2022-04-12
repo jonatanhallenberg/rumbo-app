@@ -7,6 +7,7 @@ const router = express.Router();
 
 //isAdmin "skapas" i auth.ts -> auth.ts används sedan i server.ts (main-app) -> används sedan här via (?) main-app...
 router.get("/:email/transaction", async (req, res) => {
+  console.log("Get transactions");
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
@@ -14,7 +15,6 @@ router.get("/:email/transaction", async (req, res) => {
       email: req.params.email,
     };
     if (req.query.user) {
-      // console.log(req["user"]);
     }
     if (req.query.year) {
       filter.year = req.query.year;
@@ -39,9 +39,7 @@ router.get("/:email/timereport", async (req, res) => {
     let filter: any = {
       email: req.params.email,
     };
-    console.log("Query: ",req.query);
     if (req.query.user) {
-      console.log(req["user"]);
     }
     if (req.query.year) {
       filter.year = req.query.year;
@@ -52,10 +50,7 @@ router.get("/:email/timereport", async (req, res) => {
     if (req.query.project_id) {
       filter.project = req.query.project_id;
     }
-    console.log("filter: ", filter);
     const timeReport:any = await getTimeReportsByFilter(filter);
-    console.log("timereport: ", timeReport);
-    console.log("user first");
     if(timeReport != undefined){
       const mappedReports = timeReport.map((timereport) => ({ ...timereport, hours: Number(timereport.hours) }))
       res.json(mappedReports);
@@ -78,7 +73,6 @@ router.get("/:email/transactionsmeta", async (req, res) => {
 });
 
 router.get("/:email/timereportmeta", async (req, res) => {
-  console.log("user second");
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
   } else {
