@@ -93,6 +93,7 @@ type getTimeReportFilter = {
 // };
 
 import TimeReportModel, {TimeReportType} from "./models/timereport";
+import { getLineAndCharacterOfPosition } from "typescript";
 
 export const getTimeReport = async ({email,year,month,project}: getTimeReportFilter) => {
     let params = {};
@@ -108,7 +109,7 @@ export const getTimeReport = async ({email,year,month,project}: getTimeReportFil
     if (project) {
         params['project'] = project;
     }
-    const timereports = await TimeReportModel.find(params)
+    const timereports = await TimeReportModel.find(params).lean()
     console.log(timereports)
     return timereports
 }
@@ -120,7 +121,8 @@ export const getTimeReportById = async (timereportId: any) => {
 };
 
 export const deleteTimeReportById = async (timeReportId: any) => {
-    await TimeReportModel.findByIdAndDelete(timeReportId)
+    return await TimeReportModel.findByIdAndDelete(timeReportId)
+    
 };
 
 // export const getTimeReportMeta = async (email: string) => {
@@ -145,6 +147,12 @@ export const addTimeReport = (timeReport: TimeReportType) => {
         }
       );
       return newTimeReport.save().then((res) => [res]);
+    //   const newTimeReportArray = []
+    //   newTimeReportArray.push(newTimeReport)
+    //   console.log(newTimeReportArray)
+    //   return newTimeReportArray
+    
+
     }
 
 export const updateTimeReport = (timeReport: TimeReportType) => {

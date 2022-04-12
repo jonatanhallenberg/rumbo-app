@@ -68,7 +68,7 @@ const TimeReportRow = ({
             {!isMobile && (
                 <>
                     <Table.TextCell maxWidth="125px">
-                        {/* {dateformat(timereport.time, "yyyy-mm-dd")} */}
+                        {dateformat(timereport.time, "yyyy-mm-dd")}
                     </Table.TextCell>
                     <Table.TextCell>{timereport.description}</Table.TextCell>
                 </>
@@ -87,7 +87,7 @@ const TimeReportRow = ({
             {<><Table.TextCell isNumber>
                 {new Intl.NumberFormat("sv-SE").format(timereport.hours)}
             </Table.TextCell>
-                {/* <Table.TextCell>{project.project_name}</Table.TextCell> */}
+                <Table.TextCell>{project.project_name}</Table.TextCell>
                 <Table.Cell justifyContent="right" width="10px">
                     {
                         isAdmin && (showMoreMenu ? renderMoreMenu() : showConfirmDelete ? renderConfirmDelete() : <StyledIconButton icon={MoreIcon} onClick={() => setShowMoreMenu(true)} />)
