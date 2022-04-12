@@ -51,7 +51,7 @@ router.post("/timereport", async (req, res) => {
     const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
     // delete mapTimeReportData.created_at;
     res.json(mapTimeReportData);
-  }
+  } 
 });
 
 router.put("/:email/timereport/:id", async (req, res) => {
