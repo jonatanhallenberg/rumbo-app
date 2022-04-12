@@ -1,0 +1,9 @@
+1. Run SQL-scripts from export.sql in PGAdmin
+2. Copy files from postgres_container to mongo container
+    example: docker cp postgres_container:/tmp/employees.json mongo_container:/tmp/employees.json
+3. Import files in mongo container
+    example: mongoimport /tmp/employees.json --db rumbo --collection employees
+4. Run the following commands in mongosh
+use *dbname*
+db.transactions.updateMany({},[{$set: { time: { $dateFromString: { dateString: "$time" } } }}])
+db.projects.updateMany({},[{$set: { createdat: { $dateFromString: { dateString: "$createdat" } } }}])
