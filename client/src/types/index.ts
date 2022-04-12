@@ -18,7 +18,7 @@ export enum TransactionStatus {
 }
 
 export type TimeReport = {
-  id: number,
+  id: number | string,
   email: string;
   time: Date;
   description: string;
@@ -28,7 +28,7 @@ export type TimeReport = {
 };
 
 export type NewTimeReport = {
-  id: number,
+  id: number | string,
   email: string;
   time: Date;
   hours?: number;

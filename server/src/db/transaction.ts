@@ -102,7 +102,6 @@ export const getTransactions = async ({
     if(description){
       queries['description'] = { '$regex' : '.*' + description + '.*', '$options' : 'i' }
     }
-    console.log('TRANSACTIONS', queries)
   return await TransactionModel.find(queries);
 }
 
@@ -129,4 +128,4 @@ export const addTransaction = (transaction: TransactionType) => {
       }
     );
     return transactionModel.save().then((res) => [res]);
-  }
+   }

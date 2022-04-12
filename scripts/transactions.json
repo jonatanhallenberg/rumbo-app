@@ -1,0 +1,13 @@
+{
+    "email": "kalle.anka@gmail.com",
+    "time": ISODate('2021-12-31T23:00:00.000Z'),
+    "amount": 200,
+    "description": "KALLES LÖN",
+    "status": 0
+    }
+    "email": 'kajsa.anka@gmail.com',
+    "time": ISODate('2021-11-25T23:00:00.000Z'),
+    "amount": 2000,
+    "description": 'KAISAS LÖN',
+    "status": 0
+    }

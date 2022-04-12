@@ -12,7 +12,7 @@ router.delete("/:transactionId", async (req, res) => {
   
       const transactionId = req.params.transactionId;
       // const transactionId = Number(req.params.transactionId);
-      console.log(transactionId);
+      // console.log(transactionId);
   
       // if (!Number.isInteger(transactionId)) {
       //   return res.sendStatus(400);
@@ -37,7 +37,7 @@ router.delete("/:transactionId", async (req, res) => {
     };
   
     if (req.query.user) {
-      console.log(req["user"]);
+      // console.log(req["user"]);
     }
     if (req.query.year) {
       filter.year = req.query.year;
@@ -56,14 +56,12 @@ router.delete("/:transactionId", async (req, res) => {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-  
       const newTransaction = await addTransaction({
         email: req.body.email,
         time: req.body.time,
         amount: req.body.amount,
         description: req.body.description,
       });
-  
       res.json(newTransaction[0]);
     }
   });

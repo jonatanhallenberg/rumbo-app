@@ -39,6 +39,7 @@ router.post("/timereport", async (req, res) => {
     //   hours: req.body.hours,
     //   project_id: req.body.project_id
     // }) as TimeReport;
+
     const newTimeReport = await addTimeReport({
       email: req.body.email,
       time: req.body.time,
@@ -69,7 +70,7 @@ router.put("/:email/timereport/:id", async (req, res) => {
       hours: req.body.hours,
       description: req.body.description,
       project_id: req.body.project_id,
-      id: req.body.id
+      _id: req.body.id
     });
 
     res.json(updatedTimeReport);
@@ -79,11 +80,11 @@ router.put("/:email/timereport/:id", async (req, res) => {
 router.delete("/:email/timereport/:timeReportId", async (req, res) => {
   if (req.params.email != req["user"] && !req["isAdmin"]) {
     res.sendStatus(401).end();
-    console.log("Loggar params", req.params);
+    // console.log("Loggar params", req.params);
   } else {
 
     const timeReportId = Number(req.params.timeReportId);
-    console.log(timeReportId);
+    // console.log(timeReportId);
 
     if (!Number.isInteger(timeReportId)) {
       return res.sendStatus(400);

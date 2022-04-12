@@ -3,7 +3,7 @@ import { Employee } from "../../app/slices/appSlice";
 
 type ProjectState = {
   employees: Employee[],
-  project_id?: number
+  project_id?: string | number
 
 }
 
