@@ -1,5 +1,6 @@
 import { query } from "./db";
 import { TimeReport } from "../types";
+import TimeReportModel from "./models/timereport";
 
 type getTimeReportFilter = {
     email?: string;
@@ -14,81 +15,44 @@ export const getTimeReport = async ({
     month,
     project,
 }: getTimeReportFilter) => {
-    let where = [];
-    let params = [];
+    const filterQuery: any = { status: 0 };
+
     if (email) {
-        params.push(email);
-        where.push(`email = $${params.length}`);
+        filterQuery.email = email;
     }
-    if (year) {
-        params.push(year);
-        where.push(`DATE_PART('year',"time") = $${params.length}`);
+    if (year && !month) {
+        filterQuery.time = { $gt: new Date(year, 0, 1), $lt: new Date(Number(year) + 1, 0, 1) }
     }
-    if (month) {
-        params.push(month);
-        where.push(`DATE_PART('month',"time") = $${params.length}`);
+    if (month && year) {
+        filterQuery.time = { $gt: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
     }
     if (project) {
-        params.push(project);
-        where.push(`project_id = $${params.length}`);
+        filterQuery.project_id = project;
     }
-
-    const whereClause = !where.length ? "" : "WHERE " + where.join(" AND ");
-    const sqlQuery = `SELECT * FROM (SELECT id, email, time, description, hours, project_id FROM public.time_reports) AllTimeReports ${whereClause}`;
-    return query(sqlQuery, params).then(res => res as TimeReport[]);
+    const timeReports = await TimeReportModel.find(filterQuery);
+    return timeReports;
 };
 
-export const getTimeReportById = async (timereportId: number) => {
-    const sqlQuery = `SELECT * FROM public.time_reports WHERE id = $1`;
-    const result = await query(sqlQuery, [timereportId]);
-    return result['length'] === 0 ? null : result[0];
+export const getTimeReportById = async (timereportId: string) => {
+    const result = await TimeReportModel.findById(timereportId);
+    return result;
 };
 
-export const deleteTimeReportById = async (timeReportId: number) => {
-    const sqlQuery = `DELETE FROM public.time_reports WHERE id = $1`;
-    await query(sqlQuery, [timeReportId]);
+export const deleteTimeReportById = async (timeReportId: string) => {
+    await TimeReportModel.findByIdAndDelete(timeReportId);
 };
 
 export const getTimeReportMeta = async (email: string) => {
-    const sqlQuery = `SELECT
-                        EXTRACT(year from time) as year,
-                        EXTRACT(month from time) as month
-                    FROM
-                        ((SELECT time FROM time_reports WHERE email = 
-                        $1)
-                        UNION (SELECT NOW() as time)) as nested
-                    GROUP BY EXTRACT(month from time), EXTRACT(year from time)
-                    ORDER BY year, month`;
-    const res: any = await query(sqlQuery, [email]);
-    return res.map(meta => ({ year: Number(meta.year), month: Number(meta.month) }));
-
+    const res: any = await TimeReportModel.aggregate([{ $match: { "email": email } }, { $group: { _id: { year: { $year: "$time" }, month: { $month: "$time" } } } }]).exec();
+    return res.map(meta => ({ year: Number(meta._id.year), month: Number(meta._id.month) }));
 };
 
-export const addTimeReport = (timeReport: TimeReport) => {
-
-    return query(
-        'INSERT INTO public.time_reports(email, "time", description, hours, project_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [
-            timeReport.email,
-            timeReport.time,
-            timeReport.description,
-            timeReport.hours,
-            timeReport.project_id,
-        ]
-    );
+export const addTimeReport = async (timeReport: TimeReport) => {
+    const newTimeReport = new TimeReportModel(timeReport);
+    await newTimeReport.save();
+    return newTimeReport;
 };
 
-export const updateTimeReport = (timeReport: TimeReport) => {
-
-    return query(
-        'UPDATE public.time_reports SET email = $1, time = $2, description = $3, hours = $4, project_id = $5 WHERE id = $6 RETURNING *',
-        [
-            timeReport.email,
-            timeReport.time,
-            timeReport.description,
-            timeReport.hours,
-            timeReport.project_id,
-            timeReport.id,
-        ]
-    );
+export const updateTimeReport = async (timeReport: TimeReport) => {
+    await TimeReportModel.findByIdAndUpdate(timeReport.id, timeReport);
 };

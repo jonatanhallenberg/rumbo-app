@@ -1,9 +1,6 @@
-import { query } from "./db";
+import EmployeeModel from './models/employee';
 
 export const getEmployees = async () => {
-    const sqlQuery = `SELECT * FROM public.employees`;
-    return await query(sqlQuery);
+    const employees = await EmployeeModel.find();
+    return employees;
 };
-
-
-

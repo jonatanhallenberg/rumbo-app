@@ -55,9 +55,7 @@ router.get("/:email/timereport", async (req, res) => {
       filter.project = req.query.project_id;
     }
     const timeReport = await getTimeReport(filter);
-    console.log(timeReport);
-    const mappedReports = timeReport.map((timereport) => ({ ...timereport, hours: Number(timereport.hours) }))
-    res.json(mappedReports);
+    res.json(timeReport);
   }
 
 });
@@ -93,7 +91,6 @@ router.get("/:email/import-visma", async (req, res) => {
     res.sendStatus(401).end();
   } else {
     const salaryTransactions = await getSalaryTransactions(2021, 12, "Liss Carl Martin Jonatan Hallenberg");
-    console.log('salaryTransactions', salaryTransactions);
     const filteredTransactions = await filterOutExistingTransactions(salaryTransactions);
     res.json(filteredTransactions);
   }

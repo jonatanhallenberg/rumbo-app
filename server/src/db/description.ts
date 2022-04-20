@@ -1,6 +1,5 @@
-import { query } from "./db";
+import TransactionModel from './models/transaction';
 
 export const getDescriptionsByEmail = async (email: string) => {
-    const sqlQuery = `SELECT DISTINCT description FROM public.transactions WHERE email LIKE $1`;
-    return await query(sqlQuery, [ email ]);
+    return await TransactionModel.find({ email: email}).distinct('description');
 };

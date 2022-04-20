@@ -1,24 +1,11 @@
-import { query } from "./db";
-import { Transaction } from "../types";
-
-type Setting = {
-  id: number;
-  key: string;
-  value: string;
-};
+import SettingModel from './models/setting';
 
 export const getSetting = async (key: string) => {
-  const sqlQuery = `SELECT * FROM public.settings WHERE key = $1`;
-  const result = await query(sqlQuery, [ key ]) as Setting[];
-  return result.length ? result[0].value : null;
+  const setting = await SettingModel.findOne({ key });
+  return setting ? setting.value : null;
 };
 
-export const setSetting = (key: string, value: string) => {
-  return query(
-    `INSERT INTO public.settings(key, value) VALUES($1, $2) ON CONFLICT ("key") DO UPDATE SET value = $2`,
-    [
-      key,
-      value
-    ]
-  );
-};
+export const setSetting = async (key: string, value: string) => {
+  const setting = await SettingModel.findOneAndUpdate({ key }, { key, value }, { upsert: true });
+  return setting;
+}

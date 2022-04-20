@@ -1,5 +1,5 @@
 export type Transaction = {
-  id?: number,
+  id: string,
   email: string;
   time: Date;
   amount: number;
@@ -16,10 +16,15 @@ export enum TransactionStatus {
 }
 
 export type TimeReport = {
-  id?: number,
+  id?: string,
   email: string;
   time: Date;
   description: string;
   hours: number;
-  project_id: number;
+  project_id: string;
+}
+
+export type Setting = {
+  key: string;
+  value: string;
 }

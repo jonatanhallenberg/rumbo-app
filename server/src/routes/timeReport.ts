@@ -39,10 +39,7 @@ router.post("/timereport", async (req, res) => {
       hours: req.body.hours,
       project_id: req.body.project_id
     }) as TimeReport;
-
-    const mapTimeReportData = { ...newTimeReport[0], hours: Number(newTimeReport[0].hours) };
-    delete mapTimeReportData.created_at;
-    res.json(mapTimeReportData);
+    res.json(newTimeReport);
   }
 });
 
@@ -74,20 +71,12 @@ router.delete("/:email/timereport/:timeReportId", async (req, res) => {
     res.sendStatus(401).end();
     console.log("Loggar params", req.params);
   } else {
-
-    const timeReportId = Number(req.params.timeReportId);
-    console.log(timeReportId);
-
-    if (!Number.isInteger(timeReportId)) {
-      return res.sendStatus(400);
+    const timeReport = await getTimeReportById(req.params.timeReportId);
+    if (!timeReport) {
+      res.sendStatus(404);
     } else {
-      const timeReport = await getTimeReportById(Number(timeReportId));
-      if (!timeReport) {
-        res.sendStatus(404);
-      } else {
-        await deleteTimeReportById(timeReportId);
-        res.json(timeReport);
-      }
+      await deleteTimeReportById(req.params.timeReportId);
+      res.json(timeReport);
     }
     res.json();
   }
