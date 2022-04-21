@@ -1,16 +1,7 @@
-import { query } from "./db";
+import ProjectModel from './models/project';
 
 export const getProjects = async (
     email?: string
 ) => {
-    let whereClause = '';
-    let params = [];
-    if (email) {
-        whereClause = `WHERE public.employees.email = $1`;
-        params = [ email ]
-    }
-
-    const sqlQuery = `SELECT public.projects.id, public.projects.project_name FROM public.projects`;
-    
-    return query(sqlQuery, params);
+    return await ProjectModel.find();
 }

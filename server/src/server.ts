@@ -10,6 +10,20 @@ import transactionRouter from './routes/transaction';
 import vismaRouter from './routes/visma';
 import timeReportRouter from './routes/timeReport';
 import employeeRouter from './routes/employee';
+import { connect } from 'mongoose';
+import { getSetting, setSetting } from './db/setting';
+
+//getSetting("foo").then(setting => console.log(setting));
+//setSetting("foo", "bar2");
+
+// import ProjectModel from './db/models/project';
+// const project = new ProjectModel({ customer_name: "Åkeriet AB", project_name: "Hemsida", agreement_ref: "123", active: true });
+// project.save();
+
+// import EmployeeModel from './db/models/employee';
+// const employee = new EmployeeModel({ firstname: "Jonatan", lastname: "Hallenberg", "email": "jonatan.hallenberg@sprinto.se", fullname: "Jonatan Hallenberg"} );
+// employee.save();
+
 
 const env = process.env.ENV || 'local';
 dotenv.config({ path: `config/${env}.env` });
@@ -60,11 +74,12 @@ app.get('/user/:email/description', async (req, res) => {
     res.send(401).end();
   } else {
     const response: any = await getDescriptionsByEmail(req.params.email);
-    res.json(response.map((transaction: any) => transaction.description));
+    res.json(response);
   }
 });
 
-
-app.listen(port, () => {
-  return console.log(`server is listening on ${port}`);
+connect('mongodb://localhost:27017/rumbo').then(() => {
+  app.listen(port, () => {
+    return console.log(`server is listening on ${port}`);
+  });
 });

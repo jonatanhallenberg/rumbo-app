@@ -1,0 +1,10 @@
+docker ps
+docker cp xxxx:/tmp .
+mongoimport employees.json --db rumbo --collection employees
+mongoimport projects.json --db rumbo --collection projects 
+mongoimport transactions.json --db rumbo --collection transactions
+
+db.transactions.find().forEach(function(el){
+    el.time = new Date(el.time);
+    db.transactions.save(el)
+});
