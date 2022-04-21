@@ -28,7 +28,7 @@ export const getTransactions = async ({
     filterQuery.time = { $gt: new Date(year, month - 1, 1), $lt: new Date(year, month, 1) }
   }
   if (description) {
-    filterQuery.description = { $regex: description };
+    filterQuery.description = { $regex: description, $options : 'i' };
   }
 
   const transactions = await TransactionModel.find(filterQuery);
